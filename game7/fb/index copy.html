@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+ <meta name="viewport" content="width=device-width,user-scalable=no"/>
+ <title></title>
+</head>
+<body>
+
+<script type="text/javascript" src="pointjs_0.2.0.6.js"></script>
+
+<script type="text/javascript">
+
+var pjs = new PointJS(1100, 620, {backgroundColor: ''})
+
+pjs.system.initFullPage();
+
+var game = pjs.game;
+var mouse = pjs.mouseControl;
+mouse.initControl();
+var r = pjs.math.random;
+
+var WH = pjs.game.getWH();
+var W=WH.w;
+var H=WH.h;
+
+var player = game.newAnimationObject(   { 
+     animation : pjs.tiles.newImage("2.png").getAnimation(0, 0, 34, 24, 4), 
+     x : 200, 
+     y : 200,
+     w : 34,
+     h : 24,
+     delay: 3
+   }); 
+
+var dy=0; // движение персонажа вних
+
+var fon = game.newImageObject({ 
+     file : "1.png", 
+     x : 0, 
+     y : 0,
+   });
+
+
+
+
+var wall = [];
+var DX = 0; // сдвиг столбиков по оси Х
+var DY =0; // сдвиг столбиков по оси Y
+
+
+var count=0;
+
+
+var generate = function() {
+
+for (var i = 0; i<5; i++) {
+
+DX += r(300, 700);
+DY += r(-110, 110);
+
+
+wall.push(
+   game.newImageObject({ 
+     file : "3.png", 
+     x : DX + W, 
+     y : 340 - DY,
+   }));
+
+wall.push(
+   game.newImageObject({ 
+     file : "3.png", 
+     x : DX + W, 
+     y : -720 - DY,
+     angle: 180
+   }));
+
+};
+
+}; //var generate = function() {
+
+
+
+
+
+
+
+
+game.newLoop('menu', function () {
+
+wall = [];
+
+player.x=200;
+player.y=200;
+player.angle=0;
+dy=0;
+
+fon.draw();
+player.draw();
+
+pjs.brush.drawText({
+  text : "Нажми мышкой на сцене, чтобы начать игру", 
+  x : 20, y : 20, 
+  color : "black",
+  size: 20
+});
+
+pjs.brush.drawText({
+  text : "Счет: " + count, 
+  x : 20, y : 50, 
+  color : "black",
+  size: 20
+});
+
+if (mouse.isDown('LEFT')) {
+	DX=0;
+	DY=0;
+	generate();
+	count=0;
+	game.setLoop('game');
+}
+
+
+
+}) // закончился ировой цикл menu
+
+
+
+
+
+
+
+
+game.newLoop('game', function () {
+
+
+dy+=0.5;
+player.y +=dy;
+player.angle=dy;
+if (mouse.isDown('LEFT')) {
+	dy=-8;
+}
+
+
+pjs.presets.bgСycle(fon, -2);
+
+
+fon.draw();
+player.draw();
+
+
+
+for (var i in wall) {
+
+    wall[i].x -=4;
+
+ if (wall[i].x + wall[i].w < 0 && wall[i].y>0) {
+ 	var G = r(-110, 110);
+ 	count++;
+ }
+
+
+    if (wall[i].x + wall[i].w <0) {
+    	wall[i].x = 2400;
+
+        if (wall[i].y>0) {
+        	wall[i].y = 340 - G;
+        }
+
+        if (wall[i].y<0) {
+        	wall[i].y = -720 - G;
+        }
+
+    }
+
+    if (player.isStaticIntersect(wall[i].getStaticBox())) {
+    	game.setLoop('menu');
+    }
+
+
+	wall[i].draw();
+}
+
+
+   if ( player.y + player.h/2 < 0 || player.y > H ) { 
+    	game.setLoop('menu');
+    }
+
+pjs.brush.drawText({
+  text : "Счет: " + count, 
+  x : 20, y : 20, 
+  color : "black",
+  size: 20
+});
+
+
+
+}) // закончился ировой цикл myGame
+
+
+
+game.setLoop('menu');
+game.start();
+
+</script>
+
+</body>
+</html>

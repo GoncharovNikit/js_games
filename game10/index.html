@@ -1,0 +1,255 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Menu game</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link href="jquery-ui.css" rel="stylesheet" />
+    <link href="style.css" rel="stylesheet" />
+    <script src="lib/jquery.js"></script>
+    <script src="lib/jquery-ui.js"></script>
+</head>
+<body>
+    <div id="before-load">
+        <i class="fa fa-spinner fa-spin"></i>
+    </div>
+
+    <div id="game_menu">
+        <div id="joe">
+            <img src="img/joe_1.png" width="170" alt="Alternate Text" />
+            <img src="img/joe_2.png" width="250" alt="Alternate Text" />
+            <img src="img/joe_3.png" width="240" alt="Alternate Text" />
+        </div>
+
+        <h1>JOE'S GAME</h1>
+
+        <button id="play">Play</button>
+
+        <button id="wM">Shop</button>
+        <div id="shop" hidden>
+
+            <ul id="products">
+                <li id="speed">
+                    <div>Speed boost</div>
+                    <div id="costS"></div>
+                </li>
+                <li id="jump">
+                    <div>Jump boost</div>
+                    <div id="costJ"></div>
+                </li>
+                <li id="damage">
+                    <div>Damage boost</div>
+                    <div id="costD"></div>
+                </li>
+                <li id="hp">
+                    <div>Max HP boost</div>
+                    <div id="costM"></div>
+                </li>
+
+            </ul>
+
+        </div>
+    </div>
+
+    <img src="img/coin.png" width="200" alt="Alternate Text" id="coins" />
+    <img src="img/zombie_1.png" width="160" height="210" alt="Alternate Text" id="zomb" />
+
+    <div id="count_C"></div>
+    <div id="count_Z"></div>
+
+    <script defer>
+        let price_list = {
+            s: [300, 5],
+            j: [300, 5],
+            d: [300, 5],
+            m: [300, 5]
+        }
+
+        $(function () {
+            $('#before-load').find('i').fadeOut().end().delay(400).fadeOut('slow');
+        });
+
+        let boosts = {
+            s: 1,
+            j: 1,
+            d: 1,
+            m: 1
+        }
+
+        $(function () {
+            let coins;
+            let zomb;
+
+            document.querySelector("#play").addEventListener("click", function () {
+                SAVE(coins, zomb);
+                location.replace('game.html');
+            });
+
+            $("#play").button({
+
+            });
+
+
+            if (window.localStorage) {
+                if (localStorage.getItem("coin") != null) {
+                    coins = localStorage.getItem("coin");
+                    coins = parseInt(coins);
+                }
+                else coins = 0;
+                if (localStorage.getItem("kills") != null) {
+                    zomb = localStorage.getItem("kills");
+                    zomb = parseInt(zomb);
+                }
+                else zomb = 0;
+            }
+            document.querySelector("#count_C").textContent = coins;
+            document.querySelector("#count_Z").textContent = zomb;
+
+
+            $("#joe img").draggable({
+                axis: 'x',
+                revert: true
+            });
+
+
+            $("#wM").button();
+            $("#wM").on("click", function () {
+                //alert("shop?");
+                $("#shop").slideToggle(1000);
+            });
+
+            $("#products").menu();
+
+
+            if (window.localStorage) {
+                if (localStorage.getItem("boost_S") != null) {
+                    boosts.s = parseInt(localStorage.getItem("boost_S"));
+                }
+                else boosts.s = 1;
+                if (localStorage.getItem("boost_J") != null) {
+                    boosts.j = parseInt(localStorage.getItem("boost_J"));
+                }
+                else boosts.j = 1;
+                if (localStorage.getItem("boost_D") != null) {
+                    boosts.d = parseInt(localStorage.getItem("boost_D"));
+                }
+                else boosts.d = 1;
+                if (localStorage.getItem("boost_M") != null) {
+                    boosts.m = parseInt(localStorage.getItem("boost_M"));
+                }
+                else boosts.m = 1;
+            }
+
+            set_Price_List(price_list);
+
+            document.querySelector("#costS").textContent = price_list.s[0] + " coins & " + price_list.s[1] + " kills"; 
+            document.querySelector("#costJ").textContent = price_list.j[0] + " coins & " + price_list.j[1] + " kills"; 
+            document.querySelector("#costD").textContent = price_list.d[0] + " coins & " + price_list.d[1] + " kills"; 
+            document.querySelector("#costM").textContent = price_list.m[0] + " coins & " + price_list.m[1] + " kills"; 
+
+            $("#speed").on("click", function () {
+                if (price_list.s[0] <= coins && price_list.s[1] <= zomb && boosts.s < 7) {
+                    coins -= price_list.s[0];
+                    zomb -= price_list.s[1];
+                    boosts.s++;
+
+                    price_list.s[0] *= 1.5;
+                    price_list.s[0] = parseInt(price_list.s[0]);
+                    price_list.s[1] += 3;
+
+                    if (boosts.s == 7) document.querySelector("#costS").textContent = "MAX";
+                    else document.querySelector("#costS").textContent = price_list.s[0] + " coins & " + price_list.s[1] + " kills"; 
+
+                    document.querySelector("#count_C").textContent = coins;
+                    document.querySelector("#count_Z").textContent = zomb;
+                }
+            });
+            $("#jump").on("click", function () {
+                if (price_list.j[0] <= coins && price_list.j[1] <= zomb && boosts.j < 7) {
+                    coins -= price_list.j[0];
+                    zomb -= price_list.j[1];
+                    boosts.j++;
+
+                    price_list.j[0] *= 1.5;
+                    price_list.j[0] = parseInt(price_list.j[0]);
+                    price_list.j[1] += 3;
+
+                    if (boosts.j == 7) document.querySelector("#costJ").textContent = "MAX";
+                    else document.querySelector("#costJ").textContent = price_list.j[0] + " coins & " + price_list.j[1] + " kills"; 
+
+                    document.querySelector("#count_C").textContent = coins;
+                    document.querySelector("#count_Z").textContent = zomb;
+                }
+            });
+            $("#damage").on("click", function () {
+                if (price_list.d[0] <= coins && price_list.d[1] <= zomb && boosts.d < 7) {
+                    coins -= price_list.d[0];
+                    zomb -= price_list.d[1];
+                    boosts.d++;
+
+                    price_list.d[0] *= 1.5;
+                    price_list.d[0] = parseInt(price_list.d[0]);
+                    price_list.d[1] += 3;
+
+                    if(boosts.d == 7)document.querySelector("#costD").textContent = "MAX"; 
+                    else document.querySelector("#costD").textContent = price_list.d[0] + " coins & " + price_list.d[1] + " kills"; 
+
+                    document.querySelector("#count_C").textContent = coins;
+                    document.querySelector("#count_Z").textContent = zomb;
+                }
+            });
+            $("#hp").on("click", function () {
+                if (price_list.m[0] <= coins && price_list.m[1] <= zomb && boosts.m < 7) {
+                    coins -= price_list.m[0];
+                    zomb -= price_list.m[1];
+                    boosts.m++;
+
+                    price_list.m[0] *= 1.5;
+                    price_list.m[0] = parseInt(price_list.m[0]);
+                    price_list.m[1] += 3;
+
+                    if (boosts.m == 7) document.querySelector("#costM").textContent = "MAX";
+                    else document.querySelector("#costM").textContent = price_list.m[0] + " coins & " + price_list.m[1] + " kills"; 
+
+                    document.querySelector("#count_C").textContent = coins;
+                    document.querySelector("#count_Z").textContent = zomb;
+                }
+            });
+        });
+
+        function SAVE(coins, zomb) {
+            if (window.localStorage) {
+                localStorage.setItem("boost_S", boosts.s);
+
+                localStorage.setItem("boost_J", boosts.j);
+
+                localStorage.setItem("boost_D", boosts.d);
+
+                localStorage.setItem("boost_M", boosts.m);
+
+                localStorage.setItem('coin', coins);
+                localStorage.setItem('kills', zomb);
+            }
+        }
+
+        function set_Price_List(p) {
+            p.s[0] = 300 * Math.pow(1.5, boosts.s - 1);
+            p.j[0] = 300 * Math.pow(1.5, boosts.j - 1);
+            p.d[0] = 300 * Math.pow(1.5, boosts.d - 1);
+            p.m[0] = 300 * Math.pow(1.5, boosts.m - 1);
+
+            p.s[1] = 5 + 3 * (boosts.s - 1);
+            p.j[1] = 5 + 3 * (boosts.j - 1);
+            p.d[1] = 5 + 3 * (boosts.d - 1);
+            p.m[1] = 5 + 3 * (boosts.m - 1);
+
+            p.s[0] = parseInt(p.s[0]);
+            p.d[0] = parseInt(p.d[0]);
+            p.j[0] = parseInt(p.j[0]);
+            p.m[0] = parseInt(p.m[0]);
+        }
+
+
+    </script>
+</body>
+</html>

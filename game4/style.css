@@ -1,0 +1,73 @@
+﻿body {
+    background-color: #485756;
+    padding: 100px;
+}
+
+button {
+    width: 100px;
+    height: 60px;
+    background-color: #32D0C2;
+    color: whitesmoke;
+    border: 4px solid #878D8D;
+    margin-right: 40px;
+    opacity: 0.7;
+    font-weight:900;
+    font-size:110%;
+}
+button:hover{
+    box-shadow:0 0 5px black;
+    opacity:0.8;
+}
+    button:focus {
+        outline: none;
+    }
+
+#game{
+    width: 700px;
+    height: 420px;
+    border: 2px solid black;
+    background-color:black;
+    border-radius:20px;
+
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-around;
+}
+
+.pazz {
+    margin-top:10px;
+    border: 1px solid white;
+    width: 120px;
+    height: 181px;
+    border-radius: 10px;
+    background-image: url(rubashka.jpg);
+    background-size:100%;
+    background-repeat:no-repeat;
+}
+
+#game img{
+    width:inherit;
+    margin-top:30px;
+}
+
+#win{
+    width: 1000px;
+    height: 800px;
+    border:1px solid black;
+    position:absolute;
+    z-index:3;
+    background-color:lightslategrey;
+    opacity:0.9;
+    left:390px;
+    top:200px;
+    color:deeppink;
+    font-size:30pt;
+    font-family:Arial;
+    text-align:center;
+    line-height:500px;
+}
+    #win img {
+        position:absolute;
+        bottom:60px;
+        left:260px;
+    }

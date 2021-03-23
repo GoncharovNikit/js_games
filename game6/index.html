@@ -1,0 +1,369 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<title>WoW GaMe</title>
+    <style>
+        body{
+            background-color:blanchedalmond;
+        }
+    </style>
+</head>
+<body>
+    <script src="pointjs.js"></script>
+    <script defer>
+        //подключение игрового движка:
+        //let pjs = new PointJS(innerWidth, innerHeight, { backgroundColor: '#908C84' });
+        /*для создания объектов и много другого используется pjs.game    поэтому можно
+         вынести эту запись в отдельную переменную*/
+        //let game = pjs.game;
+
+        /*
+         * Рект унаследован от базового объекта: ему свойственны все свойства базового объекта
+         * 
+         let rect = pjs.game.newRectObject({       /game.newRectObject
+            x:100,
+            y:100,
+            w:50,
+            h:50,
+            fillColor: 'color',
+            strokeColor: 'color',
+            strokeWidth: 4,
+            alpha: 0 - 1               -прозрачность
+         });
+
+            //создает игровой цикл:                     игровой цикл может быть не один
+            pjs.game.newLoop('Name game', function(){
+                game.clear(); - ЗАПУЩЕНА ПО УМОЛЧАНИЮ   (есть команды для отключения)
+                rect.draw();
+
+rect.turn(1);   - вращение прямоугольника (скорость и направление вращения: )  если скорость <0 - крутится против часовой
+чем больше значение - тем выше скорость
+            });
+
+Устанавливаем цикл в игру по его названию:
+            game.setLoop('Name game');
+Начинаем игру: 
+            game.start();
+
+Отрисовка объекта должна быть в конце (elem.draw());
+
+
+
+Управление клавой:    let key = pjs.keyControl;    -все методы для управления
+Запуск клавиатуры:    key.initControl();
+Проверка на нажатие:  key.isDown('Код клавиши для проверки')
+    if(key.isDown('RIGHT') || key.isDown('D')){ rect.move(p(1, 0)); }
+Коды клавиш:  key.getKeyList();   - запустить в консоли и посмотреть коды
+
+
+            Движение объекта
+obj.move(point(1, 0));   point - задает направление движения, полная запись: pjs.vector.point(x, y);
+let p = pjs.vector.point(x, y);
+obj.move(p(1, 0));   -движение на право...
+         */
+
+
+        /*Выше - квадратик, тут будет кружочек*/
+
+        /*
+        Circle
+
+let circle = game.newCircleObject({
+    x: 100,                  -center
+    y: 100,                  -center
+    radius: 10,              -radius
+    fillColor: 'color',      -цвет заливки
+    strokeColor: 'color',    -цвет обводки
+    stroleWidth: 5,          -толщина обводки
+    angle: 0,                -
+    alpha: 1,                -прозрачность
+    visible: true            -видимость
+});
+
+
+pjs.brush    - рисует
+
+pjs.brush.drawText({
+    text:'hello world',
+    x:20,
+    y:20,
+    color:'black',
+    size: 13,
+    style:'italic',
+    align:'left',
+    font: 'Times',
+    strokeColor: 'color',
+    strokeWidth: 4
+});
+
+         */
+
+        /*
+Перемещение игрока за курсором мыши:
+1. Сократим запись управления:   let mouse = pjs.mouseControl;
+2. Подключить управление мышкой (как и с клавой): mouse.initControl();
+3. moveTo(pos(точка), speed);   - двигает объект к указанной точке
+4. moveToC  -тоже самое, но двигает к центру
+5. ojb.getPosition();   -возвращает позицию объекта
+6. Кубик догоняет курсор и дергается возле него, потому что скорость у него остается,
+он дергается вперед и снова возвращается к кубику.
+Чтобы убрать - надо прощитать дистанцию между кубиком и курсором: если она очень маленькая - перестать
+двигать : if(obj.getDistance(obj2.getPosition()) > speed)player.moveToC(mouse.getPosition(), speed);
+Если obj2.getPosition > x; то чем больше x - тем раньше остановится кубик перед мышью
+7. Способ 2: вращать кубик в сторону мыши:  player.rotate(mouse.getPosition()); 
+obj.rotate(obj2.getPosition());  -разварачивает объект в сторону другого
+Если засунуть функцию в середину условия - объект не будет реагировать на микро движения мыши
+Иначе будет крутится, когда мыша внутри него
+8. За нажатием:
+8.1. if(mouse.isPress('LEFT')){}    -проверка на нажатие левой кнопки мыши /RIGHT
+8.2. player.setPosition()  / setPositionC(mouse.getPosition());  -объект пролетит на нажатую точку
+8.3. Чтоб игрок "Шел" к клику, а не телепортировался надо создать глобальную переменную с позицией игрока,
+которая будет менятся только при клике, чтобы игрок к ней шел.
+let pos = mouse.getPositionC();
+game_cicl{
+    if(mouse.isPress('LEFT')){
+        pos = mouse.getPositionC();
+        player.rotate(mouse.getPosition());
+    }
+
+    if(player.getDistance(pos) > speed){
+        player.moveToC(pos, speed, speed);
+    }
+}
+
+        Полный экран:
+pjs.system.initFullPage();
+        Установка камеры:
+pjs.camera.setPosition(player.getPosition(1));   -камера будет следить за игроком (Agario)
+getPosition(1);  :1 -относительно ццентра  .  Камеру устанавливать в конце отрисовки
+
+         */
+        let pjs = new PointJS(innerWidth, innerHeight, { backgroundColor: 'grey' });
+        let game = pjs.game;
+
+        let key = pjs.keyControl;
+        let p = pjs.vector.point;
+
+        let mouse = pjs.mouseControl;
+
+        let speed = 6;
+        let dx = dy = 0;
+        let RectS = [];
+
+        pjs.system.initFullPage();
+
+        key.initControl();
+        mouse.initControl();
+
+        let position = mouse.getPosition();
+
+        let player = game.newRectObject({
+            x: 30,
+            y: 100,
+            w: 50,
+            h: 50,
+            fillColor: 'white',
+            strokeColor: 'black',
+            strokeWidth: 3,
+            alpha: 1
+        });
+
+        for (let i = 0; i < 5; i++) {
+            RectS.push(game.newRectObject({
+                    x: 300,
+                    y: (350 * i + 100),
+                    w: 1000,
+                    h: 50,
+                    fillColor: 'green',
+                    strokeColor: 'black',
+                    strokeWidth: 3
+                })
+            );
+        }
+
+        RectS.push(game.newRectObject({
+            x: 0,
+            y: 0,
+            w: innerWidth,
+            h: 3,
+            fillColor: 'green',
+            
+            })
+        );
+        RectS.push(game.newRectObject({
+            x: 0,
+            y: innerHeight*2,
+            w: innerWidth,
+            h: 3,
+            fillColor: 'green',
+
+            })
+        );
+
+        RectS.push(game.newRectObject({
+            x: 0,
+            y: 0,
+            w: 3,
+            h: innerHeight*2,
+            fillColor: 'green',
+
+            })
+        );
+
+        RectS.push(game.newRectObject({
+            x: innerWidth,
+            y: 0,
+            w: 3,
+            h: innerHeight*2,
+            fillColor: 'green',
+
+            })
+        );
+
+        //прорисовка препятствий
+        let RECTS_DRAW = function(){
+            for (let i in RectS) {
+                RectS[i].draw();
+            }
+        }
+
+
+        //возвращает ширину и высоту рабочей области 
+        let window_WH = game.getWH();
+        //Мини карта
+        let map = game.newRectObject({
+            x: window_WH.w - 20,
+            y: window_WH.y - 20,
+            w: 100,
+            h: 100,
+            fillColor: 'white',
+            strokeColor: 'green',
+            strokeWidth: 2,
+            alpha: 0.4
+        });
+
+
+        //Проверка на столкновение
+        let COLLISION = function () {
+            for (let i in RectS) {
+
+                //Проверка на столкновение на кнопку "А" : движение влево:
+                //если прямоуг[i].столкнулся статик боксом с статик боксом игрока,
+                //который мы выдвынули при движении влево в лево на скорость (скорость = кол-во пикселей за кадр)
+                //Статик бокс - прямоуголник вокруг объекта (координаты от верхнего левого угла)
+                //.player.getStaticBoxA(смещение икса (в.л. угол), смещение игрика, смещение по высоте, смещение по ширине)
+                //Если при столкновении скорость по x = -speed (объект продолжает ехать в сторону стены)
+                //Мы ее обнуляем.  И если плеер и пролетел - устанавливаем его позицию
+                //по верхнему левому углу (в.л.угол стены + ширины (правая грань(где и находится объект))),
+                //, по y - оставляем на высоте самого игрока.
+                if (RectS[i].isStaticIntersect(player.getStaticBoxA(-speed, 0, speed))) {
+                    if (dx == -speed) {
+                        dx = 0; player.setPosition(p(RectS[i].x + RectS[i].w, player.y));
+                    }
+                }
+                if (RectS[i].isStaticIntersect(player.getStaticBoxD(0, 0, speed))) {
+                    if (dx == speed) {
+                        dx = 0; player.setPosition(p(RectS[i].x - player.w, player.y));
+                    }
+                }
+                if (RectS[i].isStaticIntersect(player.getStaticBoxW(0, -speed, 0, speed))) {
+                    if (dy == -speed) {
+                        dy = 0; player.setPosition(p(player.x, RectS[i].y + RectS[i].h));
+                    }
+                }
+                if (RectS[i].isStaticIntersect(player.getStaticBoxS(0, 0, 0, speed))) {
+                    if (dy == speed) {
+                        dy = 0; player.setPosition(p(player.x, RectS[i].y - player.h));
+                    }
+                }
+
+
+
+            }
+        }
+
+        let MOVE = function move_Circle(speed) {
+            dx = dy = 0;
+
+            if (key.isDown('W') || key.isDown('UP')) {
+                dy = -speed;
+            }
+            else if (key.isDown('S') || key.isDown('DOWN')) {
+                dy = speed;
+            }
+            if (key.isDown('D') || key.isDown('RIGHT')) {
+                dx = speed;
+            }
+            else if (key.isDown('A') || key.isDown('LEFT')) {
+                dx = -speed;
+            }
+            
+        }
+
+        let BANG = function () {
+
+        }
+
+        
+
+        game.newLoop('move_player', function () {
+            window_WH = game.getWH();
+            map.setPositionS(p(window_WH.w - map.w - 20, window_WH.h - map.h - 20));
+
+            if (key.isDown('SHIFT')) speed = 20;
+            else speed = 6;
+            
+            MOVE(speed);
+            COLLISION();
+            player.move(p(dx, dy));
+
+            player.turn((dx+dy));
+
+            //способ 1 (игрок идет за курсором просто)
+            //if (player.getDistance(mouse.getPosition()) > speed)
+             //   player.moveToC(mouse.getPosition(), speed, speed);
+
+            //способ 2 (игрок идет за курсором и поворачивается к нему)
+            //if (player.getDistance(mouse.getPosition()) > 26) {
+            //    player.rotate(mouse.getPosition());
+            //    player.moveToC(mouse.getPosition(), speed, speed);
+            //}
+
+            //способ 3 (игрок телепортируется к нажатию курсура)
+            //if (mouse.isPress('LEFT')){
+            //    player.setPositionC(mouse.getPosition());
+            //}
+
+            //способ 4 (игрок идет в точку нажатия)
+            //if (mouse.isPress('LEFT')) {
+            //    position = mouse.getPosition();
+            //    player.rotate(mouse.getPosition());
+            //}
+
+            //if (player.getDistance(position) > speed) {
+            //    player.moveToC(position, speed, speed);       
+            //}
+
+            if (key.isDown('R')) {
+                player.turn(2);
+            }
+            if (key.isDown('V')) {
+                BANG();
+            }
+
+            RECTS_DRAW();
+            player.draw();
+            pjs.camera.setPositionC(player.getPosition());
+            map.draw();
+
+        });
+
+
+        game.setLoop('move_player');
+        game.start();
+
+
+    </script>
+</body>
+</html>
