@@ -1,5 +1,5 @@
 function hello() { alert('hello');}
-let games_Count = 10;
+let games_Count = 13;
 
 let but_Change_Anim = document.querySelector('#anim_Change');
 
@@ -174,7 +174,7 @@ function anim_Figure() {
     class Dot {  //tochka
         constructor() {
             this.pos = { x: center_x, y: center_y };
-            this.dir = config_F.dirs_Count == 6 ? (Math.random() * 3 | 0) * 2 : Math.random() * config_F.dirs_Count | 0; //от нуля до пяти
+            this.dir = config_F.dirs_Count == 6 ? (Math.random() * 3 | 0) * 2 : Math.random() * config_F.dirs_Count | 0; //пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ
             this.step = 0;
         }
 
@@ -270,7 +270,7 @@ function anim_Figure() {
 function anim_Lines() {
     let index_l = 'lines';
 
-    let particles = [];   //частицы
+    let particles = [];   //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
     let properties = {
         back_Color: '#5A564A',
@@ -282,7 +282,7 @@ function anim_Lines() {
         particle_Life: 6
     }
 
-    window.onresize = function () {   //При изменении размера окна - меняется и канвас
+    window.onresize = function () {   //пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         w = canvas.width = innerWidth;
         h = canvas.height = innerHeight;
     }
@@ -377,14 +377,14 @@ function anim_Lines() {
             console.log('lines INDEX: ' + index_l); requestAnimationFrame(loop);
         }
 
-        //requestAnimationFrame(loop);   //вызывает луп на 60 фпс
+        //requestAnimationFrame(loop);   //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ 60 пїЅпїЅпїЅ
     }
 
     function init() {
         for (let i = 0; i < properties.particle_Count; i++) {
             particles.push(new Particle);
         }
-        loop();  //запускает рекурсивную функцию в конце
+        loop();  //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ
     }
 
     init();

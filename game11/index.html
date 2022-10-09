@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>HomeWork</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="tools">
+        r:
+        <input max="100" min="0.01" type="range" id="r" />
+        R:
+        <input max="100" min="0.01" type="range" id="R" />
+        D:
+        <input max="100" min="0.01" type="range" id="D" />
+        Speed:
+        <input type="range" max="1000" min="0.5" id="sp" />
+
+        <button onclick="pause();">pause</button>
+        <button onclick="clear_();">clear</button>
+        <button onclick="start();">start</button>
+
+        <input type="color" id="color" />
+        <br />
+        <br />
+        <br />
+        <button onclick="regim_Linii_Draw();">Линии</button>
+        <button onclick="regim_Paint_Draw();">Paint</button>
+        <button onclick="sinusoidka();">SIN</button>
+    </div>
+   
+    <canvas width="1200" height="1200"></canvas>
+
+    <script src="script.js" defer></script>
+</body>
+</html>
