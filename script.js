@@ -1,5 +1,5 @@
 function hello() { alert('hello');}
-let games_Count = 13;
+let games_Count = 14;
 
 let but_Change_Anim = document.querySelector('#anim_Change');
 
