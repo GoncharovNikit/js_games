@@ -10,9 +10,18 @@
     <body>
         <canvas width="1800" height="800"></canvas>
         <div id="controllers">
+            <button class="btn" id="btn-data-clear">Clear</button>
             <button class="btn">Button #</button>
             <button class="btn">Button #</button>
-            <button class="btn">Button #</button>
+            <article class="instruction">
+                <ul>
+                    <li>You can drag vertices</li>
+                    <li>Click on two vertices in turn with pressed 'shift' to create an edge between them</li>
+                    <li>Click on empty place to create a new vertice</li>
+                    <li>Click on a vertice with pressed 'alt' to disable/enable it</li>
+                    <li>Click on a vertice with pressed 'alt + shift' to delete it</li>
+                </ul>
+            </article>
         </div>
         <script src="./script.js" defer></script>
     </body>

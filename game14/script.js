@@ -10,9 +10,9 @@ const verticesJSON = '[{"x":1,"y":3.4},{"x":3,"y":2},{"x":2.3,"y":5},{"x":4,"y":
 const edgesJSON = '[[0,1],[0,33],[0,2],[0,3],[1,6],[2,32],[3,5],[0,16],[4,16],[31,17],[31,4],[3,14],[8,14],[33,32],[18,32],[18,4],[3,5],[3,4],[5,8],[6,8],[5,7],[4,7],[8,9],[7,9],[3,6],[31,18],[9,22],[23,22],[23,9],[23,24],[4,15],[5,15],[3,16],[13,6],[13,8],[13,12],[9,12],[23,12],[5,9],[15,7],[15,7],[4,30],[18,30],[11,30],[11,7],[10,7],[21,7],[21,11],[11,18],[9,10],[21,10],[20,10],[21,20],[11,20],[18,19],[11,19],[20,19],[2,33],[15,3],[5,14],[6,14],[1,3],[10,22],[28,22],[28,10],[28,29],[19,29],[20,29]]'
 
 const config = {
-    vertices: JSON.parse(verticesJSON),
-    edges: JSON.parse(edgesJSON),
-    disabledVertices: [18, 4, 15, 11, 7, 9, 6],
+    vertices: [], //JSON.parse(verticesJSON),
+    edges: [], //JSON.parse(edgesJSON),
+    disabledVertices: [],// [18, 4, 15, 11, 7, 6],
     disabledColor: 'grey',
     verticeNumberDisplace: {
         x: -4,
@@ -27,7 +27,7 @@ const config = {
         y: 0,
     },
     verticeIndexToFind: 32,
-    verticeIndexFindFrom: 19,
+    verticeIndexFindFrom: 1,
     vertice: {
         radius: 5,
         color: 'black',
@@ -60,8 +60,8 @@ document.addEventListener('DOMContentLoaded', (e) => {
     canvas.height = window.innerHeight - 200
 
     initEvents()
-    redraw()
-    findPath()
+    uploadDataFromLocalStorage()
+    redraw(findPath())
 })
 
 const redraw = (path) => {
@@ -153,7 +153,7 @@ const drawVerticeIndexes = () => {
 
 const drawEdges = () => {
     context.lineWidth = config.edgeWidth
-
+    
     config.edges.forEach((edge) => {
         const begin = config.vertices[edge[0]]
         const end = config.vertices[edge[1]]
@@ -220,19 +220,165 @@ const drawFoundPath = (path) => {
 
 const getVertCoord = (coord) => coord * 100 - config.vertice.radius / 2
 
-const calcVectorLength = (vertA, vertB) =>
-    Math.sqrt((vertB.x - vertA.x) ** 2 + (vertB.y - vertA.y) ** 2)
+const calcVectorLength = (vertA, vertB) => Math.sqrt((vertB.x - vertA.x) ** 2 + (vertB.y - vertA.y) ** 2)
 
-const initEvents = () => {
-    canvas.addEventListener('click', (e) => {
-        const canvasClientRect = getCanvasBoundingClientRect()
-        debugger
-        config.vertices.push({
-            x: (e.clientX - canvasClientRect.left) / 100,
-            y: (e.clientY - canvasClientRect.top) / 100,
-        })
+const saveDataToLocalStorage = () => {
+    localStorage.setItem('vertices', JSON.stringify(config.vertices))
+    localStorage.setItem('edges', JSON.stringify(config.edges))
+    localStorage.setItem('disabledVertices', JSON.stringify(config.disabledVertices))
+}
+
+const uploadDataFromLocalStorage = () => {
+    const vertices = JSON.parse(localStorage.getItem('vertices'))
+    if (vertices?.length) {
+        config.vertices = vertices
+    }
+
+    const edges = JSON.parse(localStorage.getItem('edges'))
+    if (edges?.length) {
+        config.edges = edges
+    }
+
+    const disabledVertices = JSON.parse(localStorage.getItem('disabledVertices'))
+    if (disabledVertices?.length) {
+        config.disabledVertices = disabledVertices
+    }
+}
+
+const initControllerEvents = () => {
+    document.querySelector('#btn-data-clear').addEventListener('click', (e) => {
+        localStorage.removeItem('vertices')
+        localStorage.removeItem('edges')
+        localStorage.removeItem('disabledVertices')
+        
+        config.vertices = []
+        config.edges = []
+        config.disabledVertices = []
+
         redraw()
     })
+}
+
+const initEvents = () => {
+    initControllerEvents()
+
+    const canvasClientRect = getCanvasBoundingClientRect()
+    const mousedownHandler = (eDown) => {
+        const mouseX = (eDown.clientX - canvasClientRect.left) / 100
+        const mouseY = (eDown.clientY - canvasClientRect.top) / 100
+        let vertToMove = null
+
+        for (vert of config.vertices) {
+            if (calcVectorLength({ x: mouseX, y: mouseY }, vert) * 100 <= config.vertice.radius + 2) {
+                vertToMove = vert
+                break
+            }
+        }
+
+        if (vertToMove !== null) {
+            const mousemoveHandler = (e) => {
+                const mouseX = (e.clientX - canvasClientRect.left) / 100
+                const mouseY = (e.clientY - canvasClientRect.top) / 100
+                vertToMove.x = mouseX
+                vertToMove.y = mouseY
+                redraw(findPath())
+            }
+
+            const mouseupHandler = (e) => {
+                saveDataToLocalStorage()
+                canvas.removeEventListener('mousemove', mousemoveHandler)
+                canvas.removeEventListener('mouseup', mouseupHandler)
+            }
+
+            canvas.addEventListener('mousemove', mousemoveHandler)
+            canvas.addEventListener('mouseup', mouseupHandler)
+        }
+    }
+
+    const clickHandler = function (e) {
+        const mouseX = (e.clientX - canvasClientRect.left) / 100
+        const mouseY = (e.clientY - canvasClientRect.top) / 100
+        let clickedVert = null
+
+        for (vert of config.vertices) {
+            if (calcVectorLength({ x: mouseX, y: mouseY }, vert) * 100 <= config.vertice.radius + 2) {
+                clickedVert = vert
+                break
+            }
+        }
+
+        if (clickedVert === null) {
+            if (!e.shiftKey && !e.altKey) {
+                config.vertices.push({
+                    x: mouseX,
+                    y: mouseY,
+                })
+                redraw(findPath())
+            }
+        } else if (e.altKey && e.shiftKey) {
+            removeVertice(clickedVert)
+            redraw(findPath())
+        } else if (e.altKey) {
+            const vertId = findVerticeIndex(clickedVert)
+            if (vertId !== null) {
+                const vertIdInDisabled = config.disabledVertices.indexOf(vertId)
+                if (vertIdInDisabled === -1) {
+                    config.disabledVertices.push(vertId)
+                } else {
+                    config.disabledVertices.splice(vertIdInDisabled, 1)
+                }
+                redraw(findPath())
+            }
+        } else if (e.shiftKey) {
+            if (this.verticeBufer === undefined) {
+                this.verticeBufer = clickedVert
+            } else {
+                const vertId1 = findVerticeIndex(this.verticeBufer)
+                const vertId2 = findVerticeIndex(clickedVert)
+                if (vertId1 !== -1 && vertId2 !== -1) {
+                    config.edges.push([vertId1, vertId2])
+                }
+                redraw(findPath())
+                delete this.verticeBufer
+            }
+        }
+
+        saveDataToLocalStorage()
+    }
+
+    canvas.addEventListener('click', clickHandler)
+    canvas.addEventListener('mousedown', mousedownHandler)
+}
+
+const removeVertice = (vertice) => {
+    const vertId = findVerticeIndex(vertice)
+    if (vertId !== -1) {
+        config.vertices.splice(vertId, 1)
+        config.edges = config.edges.filter((edge) => edge[0] !== vertId && edge[1] !== vertId)
+
+        const vertIdInDisabled = config.disabledVertices.indexOf(vertId)
+        if (vertIdInDisabled !== -1) {
+            config.disabledVertices.splice(vertIdInDisabled, 1)
+        }
+
+        // vertice indexes moved
+        config.edges.forEach((edge) => {
+            if (edge[0] > vertId) {
+                edge[0]--;
+            }
+            if (edge[1] > vertId) {
+                edge[1]--;
+            }
+        })
+
+        if (config.verticeIndexFindFrom && config.verticeIndexFindFrom > vertId) {
+            config.verticeIndexFindFrom--
+        }
+
+        if (config.verticeIndexToFind && config.verticeIndexToFind > vertId) {
+            config.verticeIndexToFind--
+        }
+    }
 }
 
 function getCanvasBoundingClientRect() {
@@ -244,10 +390,25 @@ function getCanvasBoundingClientRect() {
 }
 
 const findPath = () => {
+    if (
+        !config.vertices.length
+        || config.verticeIndexFindFrom && config.vertices.length <= config.verticeIndexFindFrom
+        || config.verticeIndexToFind && config.vertices.length <= config.verticeIndexToFind
+    ) {
+        return []
+    }
+
+    removeVerticeIndexes()
     indexVertices()
     reindexVertices()
-    const path = findPathByIndexes()
-    redraw(path)
+
+    return findPathByIndexes()
+}
+
+const removeVerticeIndexes = () => {
+    config.vertices.forEach((vert) => {
+        delete vert.ind
+    })
 }
 
 const findPathByIndexes = () => {
@@ -316,6 +477,7 @@ const indexVertices = () => {
 
 const indexRelatedVerticesRecursively = (vertice) => {
     const relatedVertices = getVerticeRelatedVertices(vertice)
+
     relatedVertices.forEach((vert) => {
         if (vert.ind === undefined) {
             vert.ind = vertice.ind + calcVectorLength(vert, vertice)
@@ -326,9 +488,6 @@ const indexRelatedVerticesRecursively = (vertice) => {
 
 const getVerticeRelatedVertices = (vertice) => {
     const verticeId = findVerticeIndex(vertice)
-    if (config.disabledVertices.includes(verticeId)) { // try to remove
-        return []
-    }
 
     const res = []
 
