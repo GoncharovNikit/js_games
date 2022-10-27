@@ -1,13 +1,13 @@
 const config = {
     blockCellClass: 'block',
 
-    fieldWidth: 10,
-    fieldHeight: 10,
+    fieldWidth: 50,
+    fieldHeight: 25,
 
     startPoint: { x: 0, y: 0 },
     startPointLabel: 'S',
     endPointLabel: 'E',
-    endPoint: { x: 9, y: 9 },
+    endPoint: { x: 49, y: 24 },
     extremePointsBackColor: 'darkgreen',
     extremePointsFontColor: 'whitesmoke',
     foundPathCellBackColor: 'lightseagreen',

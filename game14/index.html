@@ -10,9 +10,28 @@
     <body>
         <canvas width="1800" height="800"></canvas>
         <div id="controllers">
-            <button class="btn" id="btn-data-clear">Clear</button>
-            <button class="btn">Button #</button>
-            <button class="btn">Button #</button>
+            <section class="controller-btns">
+                <button class="btn" id="btn-data-clear">Clear</button>
+                <button class="btn">Button #</button>
+                <!-- <div class="coord-coef-control">
+                    <label for="coord-coef">Coef of coords mult</label>
+                    <input type="number" id="coord-coef" value="100" min="1" max="200" step="1"/>
+                </div> -->
+                <div class="extreme-verts">
+                    <div class="vert-input">
+                        <label for="start-vert">Start: </label>
+                        <input type="number" id="start-vert" step="1"/>
+                    </div>
+                    <div class="vert-input">
+                        <label for="end-vert">End: </label>
+                        <input type="number" id="end-vert" step="1"/>
+                    </div>
+                </div>
+                <div class="edge-add-mode">
+                    <label for="edge-add-mode">Edge Add Mode</label>
+                    <input type="checkbox" id="edge-add-mode"/>
+                </div>
+            </section>
             <article class="instruction">
                 <ul>
                     <li>You can drag vertices</li>
@@ -20,6 +39,7 @@
                     <li>Click on empty place to create a new vertice</li>
                     <li>Click on a vertice with pressed 'alt' to disable/enable it</li>
                     <li>Click on a vertice with pressed 'alt + shift' to delete it</li>
+                    <li>Click on a vertice with pressed 'ctrl' to start extract a circle to create edges in it's area</li>
                 </ul>
             </article>
         </div>

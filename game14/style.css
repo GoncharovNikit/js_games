@@ -9,26 +9,71 @@ body {
     width: 100vw;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     flex-direction: column;
-    padding: 40px 0;
+    padding: 5px 0 10px 0;
 }
 
 canvas {
     border: 1px solid;
-    margin: auto;
+    margin: 0 auto;
     display: block;
 }
 
 #controllers {
-    height: 10%;
+    height: 180px;
     width: 97%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 100px;
+    padding: 10px 0;
 }
-#controllers button {
+#controllers .controller-btns {
+    width: 30%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    row-gap: 10px;
+    column-gap: 10px;
+    flex-wrap: wrap;
+}
+#controllers .edge-add-mode {
+    display: flex;
+    flex-direction: column;
+}
+#controllers .coord-coef-control {
+    display: flex;
+    flex-direction: column;
+}
+#controllers .extreme-verts {
+    display: flex;
+    flex-direction: column;
+    row-gap: 3px;
+    width: 90px;
+}
+.extreme-verts .vert-input {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.vert-input input {
+    width: 50px;
+}
+#controllers .controller-btns button {
     width: 120px;
     height: 40px;
+}
+#controllers .instruction {
+    width: 70%;
+    padding-left: 7%;
+}
+.instruction ul {
+    font-size: 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 20px;
+}
+.instruction ul li {
+    padding-bottom: 3px;
+    line-height: 1em;
 }
