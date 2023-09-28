@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D</title>
-    <link rel="stylesheet" href="./style.css">
-</head>
-<body>
-    <canvas></canvas>
-    <div class="controllers">
-        <label for="x-rotation">X Angle Rotation</label>
-        <input type="number" id="x-rotation" step="1" />
-        <br>
-        <label for="y-rotation">Y Angle Rotation</label>
-        <input type="number" id="y-rotation" step="1" />
-    </div>
-    <script src="./script.js"></script>
-</body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>3D rotation</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <canvas width="1800" height="800"></canvas>
+        <div id="controllers">
+            <div class="control-item">
+                <label for="preserve-rotation">Preserve rotation</label>
+                <input type="checkbox" id="preserve-rotation" />
+            </div>
+            <div class="control-item">
+                <label for="test-control">Test Control</label>
+                <input type="text" id="test-control" />
+            </div>
+        </div>
+        <script src="./script.js" defer></script>
+    </body>
 </html>

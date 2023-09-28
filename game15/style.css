@@ -9,13 +9,26 @@ body {
     width: 100vw;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     flex-direction: column;
-    padding: 5px 0 10px 0;
+    padding: 40px 0;
 }
 
 canvas {
     border: 1px solid;
-    margin: 0 auto;
+    margin: auto;
     display: block;
+}
+
+#controllers {
+    height: 10%;
+    width: 97%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 100px;
+}
+#controllers button {
+    width: 120px;
+    height: 40px;
 }
